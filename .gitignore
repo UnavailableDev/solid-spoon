@@ -1,5 +1,7 @@
 main
 
+.vscode/
+
 # Compiled Object files
 *.o
 *.obj
