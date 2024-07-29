@@ -33,38 +33,102 @@ regex_t* gen_regex(char* expr){
 
 
 void tokenize(size_t len, char* src){
-   void* r_opperator = gen_regex("foo");
+   // void* r_opperator = gen_regex("foo");
+   // void* r = gen_regex("wor");
+   // void* r_split = gen_regex("[:word:]");
 
    char curr = 1;
-   char str[64];
+
+   const int str_max = 64;
+   int str_idx = 0;
+   char str[str_max];
+   for (int i = 0; i < str_max; i++) { str[i] = '\0'; }
+
+
+   char res[64][64][str_max];
+   int res_line = 0;
+   int res_pos = 0;
+
+   int quotes = 0;
 
    while (curr != '\0'){
       curr = lex_next_char(len, src);
 
-      // switch (curr){
-      // case '-': 
-      // case '+':
-      // case '*':
-      // case '/':
-         
-      //    break;
-      // case '\n':
-      // case '\t':
-      //    break;
+      switch (curr){
+      case '\n':
+         //TODO: one-line comment support required here.
+         res_line++;
+         res_pos = 0;
+      case '\t':
+         continue; // ignore
+         break;
+
+      case '"':
+      case '\'':
+         ++quotes;
+      case '(':
+      case ')':
+      case '[':
+      case ']':
+      case '{':
+      case '}':
+      case ';':
+         if (quotes % 2 == 0) {
+            // str[str_idx++] = curr;
+         } else {
+            printf(" ==== false ====\n");
+         }
+      case ' ':
+
+         if (quotes % 2 == 0) {
+
+            printf("str\t%s\n", str);
+            // split token
+            for (int i = 0; i < str_max; i++) { 
+               res[res_line][res_pos][i] = str[i];
+               str[i] = '\0'; 
+            }
+            
+            res_pos++;
+            str_idx = 0;
+
+            if (curr != ' ') {
+               res[res_line][res_pos][0] = curr;
+               res[res_line][res_pos][1] = '\0';
+               res_pos++;
+            }
+
+         }
+            // else append to current (continues)
+
+         break;
       
-      // default:
-      //    printf("%c", curr);
-      //    break;
-      // }
-
-      if (curr == ('\n' | '\0')){
-
-      // } else if (regexec(r_opperator, (char[2]){curr, '\0'}, 0, NULL, 0)){
-
-      } else {
-         printf(".");
+      
+      default:
+         // printf("%c", curr);
+         break;
       }
 
+      str[str_idx++] = curr;
+      continue;
+
+      // if (curr == ('\n' | '\0')){
+
+      // // } else if (regexec(r_opperator, (char[2]){curr, '\0'}, 0, NULL, 0)){
+
+      // } else {
+      //    printf("\\");
+      // }
+
+   }
+
+   printf("%d, %d\n", res_line, res_pos);
+
+   for (int l = 0; l <= res_line; l++) {
+      printf("NEW LINE: \n\n");
+      for (int p = 0; p < res_pos; p++) {
+         printf("%s\n", res[l][p]);
+      }
    }
    
 
@@ -75,11 +139,11 @@ void bar(){
    void* r = gen_regex("wor");
 
    regmatch_t match;
-   printf("%x\n", regexec(r, "Hello world", 0, &match, 0));
+   printf("%x\n", regexec(r, "Hello world", 0, NULL, 0));
 
    
 
-   printf("%x, %x\n", r, match.rm_so);
+   // printf("%x, %x\n", r, match.rm_so);
 
    regfree(r);
 
