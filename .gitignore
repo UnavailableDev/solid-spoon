@@ -4,6 +4,7 @@ main
 
 # Compiled Object files
 *.o
+*.d
 *.obj
 
 # Compiled Dynamic libraries
