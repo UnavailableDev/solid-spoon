@@ -3,15 +3,15 @@
 #include <fstream>
 
 int main(int argc, char const *argv[]) {
-   foo();
+	foo();
 
 
-   // fopen();
+	// fopen();
 
 
 
-   Lexer* l = new Lexer();
-   // l->init();
-   printToken( l->get_token());
-   return 0;
+	Lexer* l = new Lexer();
+	// l->init();
+	printToken( l->get_token());
+	return 0;
 }

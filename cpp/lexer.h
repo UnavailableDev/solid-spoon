@@ -6,37 +6,37 @@
 void foo();
 
 typedef enum TokenType {
-   SKIP,
-   BLOCK,
-   KEYWORD,
-   SYMBOL,
-   NUMBER,
-   STRING,
+	SKIP,
+	BLOCK,
+	KEYWORD,
+	SYMBOL,
+	NUMBER,
+	STRING,
 }TokenType;
 
 typedef struct Token {
-   TokenType type;
-   std::string str;
+	TokenType type;
+	std::string str;
 }Token;
 
 void printToken(Token);
 
 class Lexer {
 public:
-   Lexer();
-   ~Lexer();
+	Lexer();
+	~Lexer();
 
-   // void set_src(char*);
-   void init(char*);
+	// void set_src(char*);
+	void init(char*);
 
-   Token pop_token();
-   Token get_token();
+	Token pop_token();
+	Token get_token();
 
 private:
-   size_t len;
+	size_t len;
 
-   int pos = -1;
-   char currennt;
+	int pos = -1;
+	char currennt;
 
-   bool hasMoreTokens();
+	bool hasMoreTokens();
 };
