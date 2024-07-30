@@ -6,13 +6,13 @@
 void foo();
 
 typedef enum TokenType {
-	SKIP,
+	ERROR = -1,
+	SKIP = 0,
 	BLOCK,
 	KEYWORD,
 	SYMBOL,
 	NUMBER,
 	STRING,
-	ERROR,
 }TokenType;
 
 typedef struct Token {

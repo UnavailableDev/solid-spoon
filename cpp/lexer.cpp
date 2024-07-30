@@ -33,7 +33,7 @@ void Lexer::init(char* inp) {
 
 Token Lexer::get_token() {
 	if (!this->_hasMoreTokens())
-	   return (Token){SKIP, "EOF"};
+	   return (Token){ERROR, "EOF"};
 
 	// std::string s = "asf456";
 	std::string sa = "123\n";
@@ -45,16 +45,16 @@ Token Lexer::get_token() {
 	Token spec[] = {
 		/* == Comments/Ignore == */
 		{.type = SKIP, .str = "^\\s+"},
-		// {.type = SKIP, .str = "^"},
+		{.type = SKIP, .str = "^(//).*"},
+		// {.type = SKIP, .str = "^.*\?"},
 
 		/* == Keywords == */
 
 
 		/* == Literals == */
 		{.type = NUMBER, .str = "^\\b\\d+\\b"},
-		// {.type = NUMBER, .str = "^\\d+"},
 		// {.type = STRING, .str = "^[a-zA-Z]+"},
-		// {.type = STRING, .str = "^[A-Z]+"},
+		{.type = STRING, .str = "^([\"'`]).*\\1"},
 
 		{.type = SYMBOL, .str = "^\\w+"},
 	};
