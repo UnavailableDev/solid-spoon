@@ -12,6 +12,7 @@ typedef enum TokenType {
 	SYMBOL,
 	NUMBER,
 	STRING,
+	ERROR,
 }TokenType;
 
 typedef struct Token {
@@ -33,10 +34,10 @@ public:
 	Token get_token();
 
 private:
-	size_t len;
-
-	int pos = -1;
+	int _cursor = -1;
 	char currennt;
 
-	bool hasMoreTokens();
+	std::string _file;
+
+	bool _hasMoreTokens();
 };

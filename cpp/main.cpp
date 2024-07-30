@@ -22,10 +22,16 @@ int main(int argc, char const *argv[]) {
 	char* file = (char*) malloc(sizeof(char)*READ_BUFFER);
 	fp.read(file, READ_BUFFER);
 	// std::cout << file;
+	Lexer* lex = new Lexer();
+	lex->init(file);
+	
+	Token temp;
+
+	while (temp.type != ERROR){
+		temp = lex->get_token();
+		printToken(temp);
+	}
 	
 
-	Lexer* l = new Lexer();
-	// l->init();
-	printToken( l->get_token());
 	return 0;
 }

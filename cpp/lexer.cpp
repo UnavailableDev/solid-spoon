@@ -7,18 +7,19 @@ void foo() {
 }
 
 void printToken(Token t) {
-	std::cout << "Type: " << t.type << "\nVal: " << t.str <<std::endl;
+	std::cout << "Type: " << t.type << "\nVal: '" << t.str << "'" <<std::endl;
 }
 
 Lexer::Lexer(){}
 Lexer::~Lexer(){}
 
-bool Lexer::hasMoreTokens() {
-	return (this->pos < this->len);
+bool Lexer::_hasMoreTokens() {
+	return (this->_cursor < this->_file.size());
 }
 
 void Lexer::init(char* inp) {
-
+	this->_file = inp;
+	this->_cursor = 0;
 }
 
 // Token Lexer::pop_token() {
@@ -31,34 +32,48 @@ void Lexer::init(char* inp) {
 // }
 
 Token Lexer::get_token() {
-	// if (!this->hasMoreTokens())
-	//    return nullptr;
+	if (!this->_hasMoreTokens())
+	   return (Token){SKIP, "EOF"};
 
-	std::string s = "asf456";
-	std::string sa = "123";
+	// std::string s = "asf456";
+	std::string sa = "123\n";
 	
-
-	std::regex e_num("^\\d+");
-	std::smatch match;
+	std::string s = this->_file.substr(this->_cursor);
+	// std::cout << s << "new token\n\n";
 
 
 	Token spec[] = {
+		/* == Comments/Ignore == */
 		{.type = SKIP, .str = "^\\s+"},
+		// {.type = SKIP, .str = "^"},
+
+		/* == Keywords == */
+
+
 		/* == Literals == */
 		{.type = NUMBER, .str = "^\\b\\d+\\b"},
+		// {.type = NUMBER, .str = "^\\d+"},
+		// {.type = STRING, .str = "^[a-zA-Z]+"},
 		// {.type = STRING, .str = "^[A-Z]+"},
 
 		{.type = SYMBOL, .str = "^\\w+"},
 	};
 
+	std::smatch match;
 	for (int i = 0; i < sizeof(spec)/sizeof(Token); i++ ){
 		std::regex e(spec[i].str.c_str());
-		std::cout << i <<std::endl;
-		if (std::regex_match(s, match, e)) {
-			//Match found
+
+		if (std::regex_search(s, match, e)) { //Match found
+
+			std::string res_str = match[0].str();
+			this->_cursor += res_str.length();
+
+			if (spec[i].type == SKIP) { // recursively skip empty spaces
+				return this->get_token();
+			}
 			return (Token){
 				.type = spec[i].type, 
-				.str = match[0].str()
+				.str = res_str
 			};
 		}
 	}
@@ -67,5 +82,5 @@ Token Lexer::get_token() {
 	// std::cout << std::regex_match(sa, match, e_num) << std::endl;
 	// std::cout << match[0].str() << std::endl;
 
-	return (Token){SKIP, "UNK TOKEN"};
+	return (Token){ERROR, "UNK TOKEN"};
 }
