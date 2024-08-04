@@ -25,13 +25,16 @@ void printToken(Token);
 class Lexer {
 public:
 	Lexer();
+	// Lexer(char*);
 	~Lexer();
 
 	// void set_src(char*);
 	void init(char*);
+	void init(std::string);
 
 	Token pop_token();
 	Token get_token();
+	void get_tree();
 
 private:
 	int _cursor = -1;

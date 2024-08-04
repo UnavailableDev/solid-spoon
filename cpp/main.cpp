@@ -25,13 +25,15 @@ int main(int argc, char const *argv[]) {
 	Lexer* lex = new Lexer();
 	lex->init(file);
 	
-	Token temp;
+	// Token temp;
 
-	while (temp.type != ERROR){
-		temp = lex->get_token();
-		printToken(temp);
-	}
+	// while (temp.type != ERROR){
+	// 	temp = lex->get_token();
+	// 	printToken(temp);
+	// }
+
+	lex->get_tree();
 	
-
+	delete lex;
 	return 0;
 }
