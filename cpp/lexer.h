@@ -47,12 +47,12 @@ private:
 	bool _hasMoreTokens();
 };
 
-class Node {
+class LexicalTree {
 public:
-	Node();
-	~Node();
+	// LexicalTree();
+	// ~LexicalTree();
 
 	Token* _val = nullptr;
-	Node* _next = nullptr;
-	Node* _inside = nullptr;
+	LexicalTree* _sibling = nullptr; // same Block
+	LexicalTree* _child = nullptr;   // new Block
 };

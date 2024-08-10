@@ -3,7 +3,7 @@
 #include <iostream>
 
 /* TODO: 
-	- [x] Deal with trailing bracket
+	- [ ] Deal with propper recursion for brackets
 	- [ ] Move Token spec[] to private const in class
 	- [ ] Define Lexer tree data structure
 	- [ ] Generate tree
@@ -80,11 +80,15 @@ Token Lexer::get_token() {
 		// {.type = SKIP, .str = "^.*\?"},
 
 		/* == Blocks == */
-		{.type = BLOCK, .str = 		"^[{}](?:.|\n)*?(?:[{}])"},     // { ->}
-		{.type = BLOCK, .str = "^[\\(\\)](?:.|\n)*?(?:[\\(\\)])"}, // ( ->)
-		{.type = BLOCK, .str = "^[\\[\\]](?:.|\n)*?(?:[\\[\\]])"}, // [ ->]
+		// {.type = BLOCK, .str = 		"^[{}](?:.|\n)*?(?:[{}])"},     // { ->}
+		// {.type = BLOCK, .str = "^[\\(\\)](?:.|\n)*?(?:[\\(\\)])"}, // ( ->)
+		// {.type = BLOCK, .str = "^[\\[\\]](?:.|\n)*?(?:[\\[\\]])"}, // [ ->]
 
-		{.type = SKIP, .str = "^[\\)\\]}]"}, // Block terminator
+		// {.type = SKIP, .str = "^[\\)\\]}]"}, // Block terminator
+
+		{.type = BLOCK, .str =   "^[{](?:.|\n)*?(?:[}])"},   // { ->}
+		{.type = BLOCK, .str = "^[\\(](?:.|\n)*?(?:[\\)])"}, // ( ->)
+		{.type = BLOCK, .str = "^[\\[](?:.|\n)*?(?:[\\]])"}, // [ ->]
 
 		/* == Keywords == */
 		{.type = KEYWORD, .str = "^\\b(condition)\\b"},
@@ -145,9 +149,9 @@ void Lexer::get_tree() {
 			std::cout << "BLOCK ::" << tok.str << "::\n";
 			Lexer* recurse = new Lexer();
 
-			char first_bracket = tok.str.front();
-			char last_bracket = tok.str.back();
-			std::cout << first_bracket << last_bracket;
+			// char first_bracket = tok.str.front();
+			// char last_bracket = tok.str.back();
+			// std::cout << first_bracket << last_bracket;
 			recurse->init(tok.str.substr(1)); //skip current bracket to avoid infinite loop
 			
 
