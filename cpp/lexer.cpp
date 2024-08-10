@@ -3,13 +3,15 @@
 #include <iostream>
 
 /* TODO: 
-	- [ ] Deal with trailing bracket
+	- [x] Deal with trailing bracket
 	- [ ] Move Token spec[] to private const in class
 	- [ ] Define Lexer tree data structure
 	- [ ] Generate tree
 	- [ ] Stitch different blocks together from the tree
 	- [ ] Check entire block string untill block is fully closed 
 			(I.E. expand untill EOF or number of brackets opening = closing)
+	- [ ] Change Block Regex, to find first closing bracket instead of any.
+	- [x] Pre-parse to remove any line- and/or block-comments.
 */
 
 void foo() {
@@ -49,16 +51,32 @@ void Lexer::init(std::string inp) {
 //    return res;
 // }
 
+void Lexer::pre_process() {
+	std::string s = this->_file;
+
+	Token r[] = {
+		{.type=BLOCK, .str="(\\?\\?).*"}, // Line comments
+	};
+
+	for(int idx = 0; idx < sizeof(r)/sizeof(Token); idx++) {
+		std::regex e(r[idx].str);
+		s = std::regex_replace(s, e, "");
+	}
+
+	this->_file = s;
+}
+
 Token Lexer::get_token() {
 	if (!this->_hasMoreTokens())
 	   return (Token){ERROR, "EOF"};
 
 	std::string s = this->_file.substr(this->_cursor);
 
+	// Miss-use of data type :)
 	Token spec[] = {
 		/* == Comments/Ignore == */
-		{.type = SKIP, .str = "^\\s+"},
-		{.type = SKIP, .str = "^(\\?\\?).*"},
+		{.type = SKIP, .str = "^\\s+"}, //White spaces
+		// {.type = SKIP, .str = "^(\\?\\?).*"},
 		// {.type = SKIP, .str = "^.*\?"},
 
 		/* == Blocks == */
@@ -66,6 +84,7 @@ Token Lexer::get_token() {
 		{.type = BLOCK, .str = "^[\\(\\)](?:.|\n)*?(?:[\\(\\)])"}, // ( ->)
 		{.type = BLOCK, .str = "^[\\[\\]](?:.|\n)*?(?:[\\[\\]])"}, // [ ->]
 
+		{.type = SKIP, .str = "^[\\)\\]}]"}, // Block terminator
 
 		/* == Keywords == */
 		{.type = KEYWORD, .str = "^\\b(condition)\\b"},
@@ -125,6 +144,10 @@ void Lexer::get_tree() {
 		case BLOCK: {
 			std::cout << "BLOCK ::" << tok.str << "::\n";
 			Lexer* recurse = new Lexer();
+
+			char first_bracket = tok.str.front();
+			char last_bracket = tok.str.back();
+			std::cout << first_bracket << last_bracket;
 			recurse->init(tok.str.substr(1)); //skip current bracket to avoid infinite loop
 			
 
@@ -143,3 +166,4 @@ void Lexer::get_tree() {
 		this->_cursor += tok.str.length();
 	}
 }
+

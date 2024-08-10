@@ -32,7 +32,9 @@ public:
 	void init(char*);
 	void init(std::string);
 
-	Token pop_token();
+	void pre_process();
+
+	// Token pop_token();
 	Token get_token();
 	void get_tree();
 
@@ -43,4 +45,14 @@ private:
 	std::string _file;
 
 	bool _hasMoreTokens();
+};
+
+class Node {
+public:
+	Node();
+	~Node();
+
+	Token* _val = nullptr;
+	Node* _next = nullptr;
+	Node* _inside = nullptr;
 };

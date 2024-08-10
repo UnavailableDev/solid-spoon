@@ -24,6 +24,7 @@ int main(int argc, char const *argv[]) {
 	// std::cout << file;
 	Lexer* lex = new Lexer();
 	lex->init(file);
+	lex->pre_process();
 	
 	// Token temp;
 
